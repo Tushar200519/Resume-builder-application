@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Modern Resume Builder</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .container { background: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 100%; max-width: 600px; }
+        h2 { text-align: center; color: #333; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; }
+        input, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        .row { display: flex; gap: 10px; }
+        button { background: #764ba2; color: white; border: none; padding: 15px; width: 100%; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 10px; transition: 0.3s; }
+        button:hover { background: #5a368a; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Professional Resume Builder</h2>
+        
+        <div class="row">
+            <div class="form-group" style="flex: 1;">
+                <label>Full Name</label>
+                <input type="text" id="name" placeholder="John Doe">
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label>Email</label>
+                <input type="email" id="email" placeholder="john@example.com">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group" style="flex: 1;">
+                <label>LinkedIn Link</label>
+                <input type="text" id="linkedin" placeholder="linkedin.com/in/username">
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label>GitHub Link</label>
+                <input type="text" id="github" placeholder="github.com/username">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Education (University, Degree, Year)</label>
+            <textarea id="education" rows="2" placeholder="Example: WBSU, B.Sc in CS, 2024"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Experience</label>
+            <textarea id="experience" rows="3" placeholder="Job Role, Company..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Projects</label>
+            <textarea id="projects" rows="3" placeholder="Project Name - Description..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Skills</label>
+            <input type="text" id="skills" placeholder="HTML, CSS, JS, Python...">
+        </div>
+
+        <button onclick="generatePDF()">Generate & Download PDF</button>
+    </div>
+
+    <script>
+        async function generatePDF() {
+            const userData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                linkedin: document.getElementById('linkedin').value,
+                github: document.getElementById('github').value,
+                education: document.getElementById('education').value,
+                experience: document.getElementById('experience').value,
+                projects: document.getElementById('projects').value,
+                skills: document.getElementById('skills').value
+            };
+
+            const response = await fetch('http://127.0.0.1:5000/generate-resume', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(userData)
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Professional_Resume.pdf';
+                a.click();
+            } else {
+                alert("Error generating PDF!");
+            }
+        }
+    </script>
+</body>
+</html>
